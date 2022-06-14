@@ -10,14 +10,27 @@ public class QuickSort {
     @Test
     public void testQuickSort(){
         int[] numArr = new int[]{20, 15, 30, 43, 7, 78, 93, 13, 22, 35};
+        int[] sortedArr = new int[]{7, 13, 15, 20, 22, 30, 35, 43, 78, 93};
 
-        System.out.println(Arrays.toString(numArr));
+        assert !Arrays.toString(numArr).equals(Arrays.toString(sortedArr));
         quickSort(numArr, 0, numArr.length - 1);
-        System.out.println(Arrays.toString(numArr));
+        assert Arrays.toString(numArr).equals(Arrays.toString(sortedArr));
     }
 
     /**
-     * Lomuto 快排: 小堆、pivotIdx、大堆
+     *
+    分片排序
+        Q: 为什么 partition 按 pivot 分割, <= pivot 在左边, >= pivot 在右边,
+           而不是单个方向等于 pivot
+        A: 避免极端情况, 数组绝大多数都是一个元素, 会让分片不均匀, 退化接近于 O(n^2), 比如 1,0,1,1,1,1,1,2,22,2
+
+    left  指针左侧: 比 pivot 小(含相等)的值
+    right 指针右侧: 比 pivot 大(含相等)的值
+
+    left、right 重合, 代表已经分完,根据 pivot, 交换基准值与 指针的边界,
+        这样形成了局部的小排列: 小 < pivot < 大
+
+    [pivot的位置正好是left、right指针重合处]
      * @param arr
      * @param startIdx
      * @param endIdx
@@ -27,45 +40,31 @@ public class QuickSort {
             return;
         }
 
-        int pivotIdx = partition(arr, startIdx, endIdx);
-        quickSort(arr, startIdx, pivotIdx - 1);
-        quickSort(arr, pivotIdx + 1, endIdx);
-    }
-
-    /*
-    分片排序
-
-    left 指针左侧: 比 pivot 小(含相等)的值
-    right 指针右侧: 比 pivot 大(含相等)的值
-    left、right 重合, 代表已经分完,根据 pivot, 交换基准值与 指针的边界,
-        这样形成了局部的小排列: 小 < pivot < 大
-
-    [pivot的位置正好是left、right指针重合处]
-     */
-    private static int partition(int[] arr, int startIdx, int endIdx) {
-        int pivot = arr[startIdx];
         int left = startIdx;
         int right = endIdx;
+        int pivot = arr[(left + right) / 2];
 
-        while (left != right) {
-            //比较成功,指针向中间靠拢
-            while (right > left && arr[right] > pivot) {
-                right--;
-            }
-            while (left < right && arr[left] <= pivot) {
+        while (left <= right){
+            while (left <= right && arr[left] < pivot){
                 left++;
             }
-            // left、right 两者均比较失败, 对应值【交换】
-            int tmpInt = arr[left];
-            arr[left] = arr[right];
-            arr[right] = tmpInt;
-        }
-        // left=right, 交换基准值与 指针的边界, 这样形成了局部的小排列: 小 < pivot < 大
-        // [pivot的位置正好是left、right指针重合处]
-        arr[startIdx] = arr[left];
-        arr[left] = pivot;
+            while (left <= right && arr[right] > pivot){
+                right--;
+            }
 
-        return left;
+            if (left <= right){
+                int tmp = arr[left];
+                arr[left] = arr[right];
+                arr[right] = tmp;
+
+                left++;
+                right--;
+            }
+        }
+
+
+        quickSort(arr, startIdx, right);
+        quickSort(arr, left, endIdx);
     }
 
 }

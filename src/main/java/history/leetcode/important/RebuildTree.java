@@ -1,6 +1,6 @@
 package history.leetcode.important;
 
-import leetcode.tree.TreeNode;
+import history.leetcode.tree.TreeNode;
 
 import java.util.HashMap;
 

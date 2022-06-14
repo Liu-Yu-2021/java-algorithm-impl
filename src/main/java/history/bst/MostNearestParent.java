@@ -1,6 +1,6 @@
 package history.bst;
 
-import leetcode.tree.bst.TreeNode;
+import history.leetcode.tree.bst.TreeNode;
 
 import java.util.*;
 

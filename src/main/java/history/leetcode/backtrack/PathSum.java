@@ -1,6 +1,6 @@
 package history.leetcode.backtrack;
 
-import leetcode.tree.TreeNode;
+import history.leetcode.tree.TreeNode;
 import org.junit.Test;
 
 import java.util.ArrayList;
